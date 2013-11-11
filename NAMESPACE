@@ -1,0 +1,6 @@
+useDynLib(Rux)
+exportPattern("^[[:alpha:]]+")
+exportPattern("^[^\\.]")
+importFrom(MASS, mvrnorm)
+
+
