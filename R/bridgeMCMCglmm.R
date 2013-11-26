@@ -36,10 +36,10 @@ LuxToMCMCglmmBridge <- function(
 
 }
 
-LuxToMCMCglmmBridge(
-	tags = c(1,2), tb=c(3,5), td=c(10,10), 
-	recaptures=list('1'=c(3,5,6), '2'=c(5,6)),
-	times=c(start=1, stop=15), surveys=c(start=3, stop=6), CJS=TRUE)
+#LuxToMCMCglmmBridge(
+#	tags = c(1,2), tb=c(3,5), td=c(10,10), 
+#	recaptures=list('1'=c(3,5,6), '2'=c(5,6)),
+#	times=c(start=1, stop=15), surveys=c(start=3, stop=6), CJS=TRUE)
 
 
 #LuxToMCMCglmmBridge(

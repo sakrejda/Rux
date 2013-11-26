@@ -19,6 +19,7 @@ RcppExport SEXP locations_bind_ordered_uniform(SEXP xp, SEXP which, SEXP xp_rng)
 RcppExport SEXP locations_bind_normal(SEXP xp, SEXP which, SEXP xp_rng);
 RcppExport SEXP locations_bind_t_walk(SEXP xp, SEXP which, SEXP xp_rng);
 RcppExport SEXP locations_bind_t_walk_open(SEXP xp, SEXP which, SEXP xp_rng);
+RcppExport SEXP locations_bind_t_walk_open_reverse(SEXP xp, SEXP which, SEXP xp_rng);
 RcppExport SEXP locations_bind_t_walk_observed_normal(SEXP xp, SEXP which, SEXP xp_rng);
 RcppExport SEXP locations_bind_t_walk_observed_interval(SEXP xp, SEXP which, SEXP xp_rng);
 

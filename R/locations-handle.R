@@ -23,6 +23,7 @@ locations_handle <- setRefClass(Class = "locations_handle",
 			} else 
 				draws_ <<- x
 		},
+		manage_these_ptrs = "list",
 		locations_ptr = "externalptr",
 		rng_ptr = "externalptr"
 	),
@@ -56,7 +57,8 @@ locations_handle <- setRefClass(Class = "locations_handle",
 			if (is.null(distributions)) {
 				distr_ <<- c(
 					'constant', 'uniform', 'ordered_uniform', 'normal', 't_walk',
-					't_walk_open', 't_walk_observed_normal', 't_walk_observed_interval'
+					't_walk_open', 't_walk_open_reverse', 
+					't_walk_observed_normal', 't_walk_observed_interval'
 				)
 			} else {
 				distr_ <<- distributions
@@ -84,13 +86,14 @@ locations_handle <- setRefClass(Class = "locations_handle",
 
 
 			# Pass down to C++
-			locations_ptr <<- .Call("locations_init", 
+			manage_these_ptrs <<- .Call("locations_init", 
 				locations_=locs_, drift_ = drift_, 
 				tails_=tails_, scales_=scales_,
 				obs_scales_ = obs_scales_,
 				minima_=mins_, maxima_=maxs_, draws_ = draws_, 
 				xp_rng=rng_ptr, PACKAGE="Rux")
 
+			locations_ptr <<- manage_these_ptrs[['sampler_ptr']]
 			# Initialize (this is no longer quite right, resolve?)
 			# Much more ambiguous now how to do by default, it will have to be
 			# part of initalization, maybe just a loop of distribution names
@@ -141,6 +144,10 @@ locations_handle <- setRefClass(Class = "locations_handle",
 				},
 				t_walk_open = {
 					.Call("locations_bind_t_walk_open", 		xp=locations_ptr, 
+						which=which-1, xp_rng=rng_ptr, PACKAGE="Rux")
+				},
+				t_walk_open_reverse = {
+					.Call("locations_bind_t_walk_open_reverse", 		xp=locations_ptr, 
 						which=which-1, xp_rng=rng_ptr, PACKAGE="Rux")
 				},
 				t_walk_observed_normal = {
