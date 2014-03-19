@@ -2,7 +2,8 @@
 
 
 PKG_CXXFLAGS=-lLux -ltrng4 -llapack -lblas -I/usr/include/eigen3 -g -std=c++0x  -Wl,-z,defs
-PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` -lLux -ltrng4 -I/usr/include/eigen3 -g $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
+PKG_LIBS=-lLux -ltrng4 -I/usr/include/eigen3 -g $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
+#PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` -lLux -ltrng4 -I/usr/include/eigen3 -g $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
 ##PKG_CXXFLAGS = -g
 
 ## As an alternative, one can also add this code in a file 'configure'

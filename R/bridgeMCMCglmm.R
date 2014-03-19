@@ -3,27 +3,30 @@ LuxToMCMCglmmBridge <- function(
 	times, surveys, 
 	CJS=TRUE, COV=NULL
 ) {
+	## CJS or not?
 	if (!CJS && is.null(tt)) 
 		stop("Must provide time of tagging for non-CJS.")
 	else { tt <- tb } ## CJS assumption
+
 	dat <- mapply(
 		FUN = function(i, tb, td, tt, recaptures, times, surveys, CJS) {
 			dat <- data.frame(
-				survive=NA, recapture=NA, alive=0, tag=i, time=times['start']:times['stop'])
-			dat[['alive']][ tb:(td-1) ] <- 1
+				survive=NA, recapture=NA, alive=0, tag=i, time=tb:td)
+
+			## Alive:
+			dat[['alive']][ dat[['time']] %in% tb:(td-1) ] <- 1
+
 			## Survive:
 			if( (td-1) > tb ) {
 				dat[['survive']][ dat[['time']] %in% (tb:(td-2)) ] <- 1
 			}
 			dat[['survive']][ dat[['time']] %in% (td-1)      ] <- 0
-			## End Survive
 
 			## Recapture:
-			available <- apply(X=cbind((td-1),surveys['stop']), 1, min)
-			dat[['recapture']][ tt:available ] <- 0
-			dat[['recapture']][ recaptures ] <- 1
-			if (CJS) dat[['recapture']][ tb ] <- NA  ## CJS assumption.
-			## End Recapture
+			available <- tt:(min(td-1,surveys['stop']))
+			dat[['recapture']][ dat[['time']] %in% available ] <- 0
+			dat[['recapture']][ dat[['time']] %in% recaptures ] <- 1
+			if (CJS) dat[['recapture']][ dat[['time']] == tb ] <- NA  ## CJS assumption.
 
 			return(dat)
 		}, i=tags, tb=tb, td=td, tt=tt, recaptures=recaptures, 

@@ -11,17 +11,83 @@ locations_handle <- setRefClass(Class = "locations_handle",
 		distr_ = "character",
 		distribution_type = "list",
 		locations = function(x=NULL) {
-			if (is.null(x))
+			if (is.null(x)) {
+				locs_ <<- c(.Call(
+					"get_map", xp=manage_these_ptrs[['data_ptr']], s="observed", PACKAGE="Rux"))
 				return(locs_)
-			else
-				locs_ <<- x
+			} else if (length(x) == length(locs_)) {
+				locs_ <<- c(.Call(
+					"set_map", xp=manage_these_ptrs[['data_ptr']], s="observed", x=x, PACKAGE="Rux"))
+				return(locs_)
+			}
+		},
+		minima = function(x=NULL) {
+			if (is.null(x)) {
+				mins_ <<- c(.Call(
+					"get_map", xp=manage_these_ptrs[['data_ptr']], s="minima", PACKAGE="Rux"))
+				return(mins_)
+			} else if (length(x) == length(mins_)) {
+				mins_ <<- c(.Call(
+					"set_map", xp=manage_these_ptrs[['data_ptr']], s="minima", x=x, PACKAGE="Rux"))
+				return(mins_)
+			}
+		},
+		maxima = function(x=NULL) {
+			if (is.null(x)) {
+				maxs_ <<- c(.Call(
+					"get_map", xp=manage_these_ptrs[['data_ptr']], s="maxima", PACKAGE="Rux"))
+				return(maxs_)
+			} else if (length(x) == length(maxs_)) {
+				maxs_ <<- c(.Call(
+					"set_map", xp=manage_these_ptrs[['data_ptr']], s="maxima", x=x, PACKAGE="Rux"))
+				return(maxs_)
+			}
 		},
 		draws = function(x=NULL) {
 			if (is.null(x)) {
 				.self$draw()
+				draws_ <<- c(.Call("get_map", xp=manage_these_ptrs[['theta_ptr']], s="draws", PACKAGE="Rux"))
 				return(draws_)
-			} else 
-				draws_ <<- x
+			} else if (length(x) == length(draws_)) {
+				draws_ <<- c(.Call("set_map", xp=manage_these_ptrs[['theta_ptr']], s="draws", x=x, PACKAGE="Rux"))
+				return(draws_)
+			}
+		},
+		observation_scales = function(x=NULL) {
+			if (is.null(x)) {
+				obs_scales_ <<- c(.Call("get_map", xp=manage_these_ptrs[['theta_ptr']], s="obs_scales", PACKAGE="Rux"))
+				return(obs_scales_)
+			} else if (length(x) == length(obs_scales_)) {
+				obs_scales_ <<- c(.Call("set_map", xp=manage_these_ptrs[['theta_ptr']], s="obs_scales", x=x, PACKAGE="Rux"))
+				return(obs_scales_)
+			}
+		},
+		drift = function(x=NULL) {
+			if (is.null(x)) {
+				drift_ <<- c(.Call("get_map", xp=manage_these_ptrs[['theta_ptr']], s="drift", PACKAGE="Rux"))
+				return(drift_)
+			} else if (length(x) == length(drift_)) {
+				drift_ <<- c(.Call("set_map", xp=manage_these_ptrs[['theta_ptr']], s="drift", x=x, PACKAGE="Rux"))
+				return(drift_)
+			}
+		},
+		tails = function(x=NULL) {
+			if (is.null(x)) {
+				tails_ <<- c(.Call("get_map", xp=manage_these_ptrs[['theta_ptr']], s="tails", PACKAGE="Rux"))
+				return(tails_)
+			} else if (length(x) == length(tails_)) {
+				tails_ <<- c(.Call("set_map", xp=manage_these_ptrs[['theta_ptr']], s="tails", x=x, PACKAGE="Rux"))
+				return(tails_)
+			}
+		},
+		scales = function(x=NULL) {
+			if (is.null(x)) {
+				scales_ <<- c(.Call("get_map", xp=manage_these_ptrs[['theta_ptr']], s="scales", PACKAGE="Rux"))
+				return(scales_)
+			} else if (length(x) == length(scales_)) {
+				scales_ <<- c(.Call("set_map", xp=manage_these_ptrs[['theta_ptr']], s="scales", x=x, PACKAGE="Rux"))
+				return(scales_)
+			}
 		},
 		manage_these_ptrs = "list",
 		locations_ptr = "externalptr",
@@ -183,14 +249,14 @@ locations_handle <- setRefClass(Class = "locations_handle",
 	)
 )
 
-locations_handle$lock('locs_')
-locations_handle$lock('drift_')
-locations_handle$lock('tails_')
-locations_handle$lock('scales_')
-locations_handle$lock('obs_scales_')
-locations_handle$lock('mins_')
-locations_handle$lock('maxs_')
-locations_handle$lock('distr_')
-
+#locations_handle$lock('locs_')
+#locations_handle$lock('drift_')
+#locations_handle$lock('tails_')
+#locations_handle$lock('scales_')
+#locations_handle$lock('obs_scales_')
+#locations_handle$lock('mins_')
+#locations_handle$lock('maxs_')
+#locations_handle$lock('distr_')
+#
 
 

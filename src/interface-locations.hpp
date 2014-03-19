@@ -13,6 +13,9 @@ RcppExport SEXP locations_init(
 		SEXP xp_rng);
 RcppExport SEXP locations_state(SEXP xp);
 
+RcppExport SEXP set_map(SEXP xp, SEXP s, SEXP x);
+RcppExport SEXP get_map(SEXP xp, SEXP s);
+
 RcppExport SEXP locations_bind_constant(SEXP xp, SEXP which);
 RcppExport SEXP locations_bind_uniform(SEXP xp, SEXP which, SEXP xp_rng);
 RcppExport SEXP locations_bind_ordered_uniform(SEXP xp, SEXP which, SEXP xp_rng);
