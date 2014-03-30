@@ -8,6 +8,6 @@ Maintainer: Krzysztof Sakrejda <krzysztof.sakrejda@gmail.com>
 Description: Interface code to load data, as well as initialize and
 	test algorithms and store/process output.
 License: GPL
-Depends: Rcpp (>= 0.11.0), RcppArmadillo
-LinkingTo: RcppArmadillo
+Depends: Rcpp (>= 0.11.1), RcppArmadillo
+LinkingTo: Rcpp, RcppArmadillo
 Collate: recapture-handle.R locations-handle.R bridgeMCMCglmm.R one-location-handle.R two-step.R

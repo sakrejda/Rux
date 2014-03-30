@@ -18,17 +18,17 @@ RcppExport SEXP time_series_init(
 	Rcpp::XPtr<trng::yarn2> R_ptr_rng(xp_rng);
 
 	std::map<std::string, arma::vec> data;
-	data["times"]									= Rcpp::as<arma::vec>(times_);
-	data["y_at_times"] 							= Rcpp::as<arma::vec>(y_at_times_);
-	data["minima_at_times"]   		= Rcpp::as<arma::vec>(minima_at_times_);
-	data["maxima_at_times"]   		= Rcpp::as<arma::vec>(maxima_at_times_);
+	data["times"]									= Rcpp::as<std::vector<double> >(times_);
+	data["y_at_times"] 							= Rcpp::as<std::vector<double> >(y_at_times_);
+	data["minima_at_times"]   		= Rcpp::as<std::vector<double> >(minima_at_times_);
+	data["maxima_at_times"]   		= Rcpp::as<std::vector<double> >(maxima_at_times_);
 
-	std::map<std::string, arma::vec> theta;
-	theta["x_at_times"]				= Rcpp::as<arma::vec>(x_at_times_);
-	theta["drift"]						= Rcpp::as<arma::vec>(drift_);
-	theta["tails"]						= Rcpp::as<arma::vec>(tails_);
-	theta["scales"]						= Rcpp::as<arma::vec>(scales_);
-	theta["obs_scales"]				=	Rcpp::as<arma::vec>(obs_scales_); 
+	std::map<std::string, std::vector<double> > theta;
+	theta["x_at_times"]				= Rcpp::as<std::vector<double> >(x_at_times_);
+	theta["drift"]						= Rcpp::as<std::vector<double> >(drift_);
+	theta["tails"]						= Rcpp::as<std::vector<double> >(tails_);
+	theta["scales"]						= Rcpp::as<std::vector<double> >(scales_);
+	theta["obs_scales"]				=	Rcpp::as<std::vector<double> >(obs_scales_); 
 
 	Time_Series_Data * time_series_data = new Time_Series_Data(
 		data["times"],
