@@ -1,5 +1,6 @@
 time_series_handle <- setRefClass(Class = "time_series_handle",
     fields = list(
+        times_ = "numeric",
         y_ = "numeric",
         mins_ = "numeric",
         maxs_ = "numeric",
@@ -10,17 +11,6 @@ time_series_handle <- setRefClass(Class = "time_series_handle",
         obs_scales_ = "numeric",
         distr_ = "character",
         distribution_type = "list",
-        time_series = function(x=NULL) {
-            if (is.null(x)) {
-                locs_ <<- c(.Call(
-                    "get_map", xp=manage_these_ptrs[['data_ptr']], s="observed", PACKAGE="Rux"))
-                return(locs_)
-            } else if (length(x) == length(locs_)) {
-                locs_ <<- c(.Call(
-                    "set_map", xp=manage_these_ptrs[['data_ptr']], s="observed", x=x, PACKAGE="Rux"))
-                return(locs_)
-            }
-        },
         minima = function(x=NULL) {
             if (is.null(x)) {
                 mins_ <<- c(.Call(
@@ -89,8 +79,9 @@ time_series_handle <- setRefClass(Class = "time_series_handle",
                 return(scales_)
             }
         },
-        manage_these_ptrs = "list",
-        time_series_ptr = "externalptr",
+        data_ptr = "externalptr",
+        parameters_ptr = "externalptr",
+        posterior_ptr = "externalptr",
         rng_ptr = "externalptr"
     ),
     methods = list(
@@ -98,13 +89,15 @@ time_series_handle <- setRefClass(Class = "time_series_handle",
             y_at_times = NA,
             minima_at_times = rep(NA, length(y_at_times)),
             maxima_at_times = rep(NA, length(y_at_times)),
-            x_at_times = NULL,
+            times = 1:length(y_at_times),
+            x_at_times = y_at_times,
             drift = rep(0, length(y_at_times)),
             tails = rep(NA, length(y_at_times)),
             scales = rep(NA, length(y_at_times)),
             obs_scales = rep(NA, length(y_at_times)),
             distributions = NULL,
-            RNG=NULL, seed=sample(x=1:10^3, size=1)
+            RNG=NULL,
+            seed=sample(x=1:10^3, size=1)  ## Pretend random
         ) {
             # Checks:
             competingData <- !is.na(y_at_times) & (!is.na(minima_at_times) | !is.na(maxima_at_times))
@@ -117,10 +110,18 @@ time_series_handle <- setRefClass(Class = "time_series_handle",
                 stop(msg)
             }
 
-            if (is.null(x_at_times)) {
-                warning("Using observed values as initialis.  This might not work.")
-                x_at_times <- y_at_times
-            }
+            # Sometimes it's just easier this way:
+            n_times <- length(times)
+            if (length(y_at_times) != n_times) stop("Must have one measurement per time point.")
+            if (length(minima) != n_times)     stop("Must have one lower bound per time point.")
+            if (length(maxima) != n_times)     stop("Must have one upper bound per time point.")
+            if (length(x_at_times) != n_times) stop("Must have one initial value for state ('x') per time point.")
+            if (length(drift) != n_times)      stop("Must have one drift value per time point.")
+            if (length(tails) != n_times)      stop("Must have one tail value per time point.")
+            if (length(scales) != n_times)     stop("Must have one scale value per time point.")
+            if (length(obs_scales) != n_times) stop("Must have one observation scale value per time point.")
+
+
 
 
             # Distributions:
@@ -145,6 +146,7 @@ time_series_handle <- setRefClass(Class = "time_series_handle",
             distribution_type <<- list()
 
             # Set vars.
+            times_ <<- times
             y_ <<- y_at_times   ## Used to be locs_ (observed)
             mins_ <<- minima_at_times
             maxs_ <<- maxima_at_times
@@ -155,25 +157,35 @@ time_series_handle <- setRefClass(Class = "time_series_handle",
             obs_scales_ <<- obs_scales
 
 
-            # Pass down to C++
-            manage_these_ptrs <<- .Call("locations_init",
-                locations_=locs_, drift_ = drift_,
-                tails_=tails_, scales_=scales_,
+            # Make C++ level objects, R objects are copied
+            # and should now ONLY be accessed through handles.
+            manage_these_ptrs <<- .Call("time_series_init",
+                times_= times_,
+                y_at_times_ = y_,
+                minima_at_times_ = mins_,
+                maxima_at_times_ = maxs_,
+                x_at_times = x_,
+                drift_ = drift_,
+                tails_ = tails_,
+                scales_ = scales_,
                 obs_scales_ = obs_scales_,
-                minima_=mins_, maxima_=maxs_, draws_ = draws_,
-                xp_rng=rng_ptr, PACKAGE="Rux")
+                xp_rng=rng_ptr,
+            PACKAGE="Rux")
 
-            locations_ptr <<- manage_these_ptrs[['sampler_ptr']]
-            # Initialize (this is no longer quite right, resolve?)
-            # Much more ambiguous now how to do by default, it will have to be
-            # part of initalization, maybe just a loop of distribution names
-            # to add... plus checks.
-            for ( i in which(!is.na(locations) &  is.na(obs_scales) ) ) add_distribution(type='constant', which=i)
-#           for ( i in which(!is.na(locations) & !is.na(obs_scales) ) ) add_distribution(type='normal', which=i)
-#           for ( i in which(!is.na(minima) & !is.na(maxima)) ) add_distribution(type='uniform', which=i)
+            data_ptr <<- manage_these_ptrs[['data_ptr']]
+            parameters_ptr <<- manage_these_ptrs[['parameters_ptr']]
+            posterior_ptr <<- manage_these_ptrs[['posterior_ptr']]
 
             # Return
             return(.self)
+        },
+        check_distribution_binding = function(types=NULL) {
+            if(is.null(types)) types <- distribution_type
+            if(!all(types) %in% distr_)
+                stop("Some distributions not of an allowed type.")
+            if(length(type) != length(times_))
+                stop("A distribution type must be assigned to each time point.")
+            return(TRUE)
         },
         lpdf = function(x) c(.Call("locations_lpdfs", xp=locations_ptr, X=x, PACKAGE="Rux")),
         state = function() c(.Call("locations_state", xp=locations_ptr, PACKAGE="Rux")),
