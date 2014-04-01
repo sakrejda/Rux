@@ -3,7 +3,6 @@
 #include <time_series.hpp>
 #include <random.hpp>
 #include <trng/yarn2.hpp>
-#include <RcppArmadillo.h>
 #include <map>
 
 RcppExport SEXP time_series_init(

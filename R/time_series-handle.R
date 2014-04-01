@@ -44,31 +44,31 @@ time_series_handle <- setRefClass(
 			if (is.null(x)) 
 				return(c(.Call("time_series_parameters_get_x_at_times", parameters_ptr=parameters_ptr, PACKAGE="Rux")))
 			else 
-				return(c(.Call("time_series_parameters_set_x_at_times", parameters_ptr=parameters_ptr, PACKAGE="Rux")))
+				return(c(.Call("time_series_parameters_set_x_at_times", parameters_ptr=parameters_ptr, x=x, PACKAGE="Rux")))
     },
     drift = function(x=NULL) {
 			if (is.null(x)) 
 				return(c(.Call("time_series_parameters_get_drift", parameters_ptr=parameters_ptr, PACKAGE="Rux")))
 			else 
-				return(c(.Call("time_series_parameters_set_drift", parameters_ptr=parameters_ptr, PACKAGE="Rux")))
+				return(c(.Call("time_series_parameters_set_drift", parameters_ptr=parameters_ptr, x=x, PACKAGE="Rux")))
     },
     tails = function(x=NULL) {
 			if (is.null(x)) 
 				return(c(.Call("time_series_parameters_get_tails", parameters_ptr=parameters_ptr, PACKAGE="Rux")))
 			else 
-				return(c(.Call("time_series_parameters_set_tails", parameters_ptr=parameters_ptr, PACKAGE="Rux")))
+				return(c(.Call("time_series_parameters_set_tails", parameters_ptr=parameters_ptr, x=x, PACKAGE="Rux")))
     },
     scales = function(x=NULL) {
 			if (is.null(x)) 
 				return(c(.Call("time_series_parameters_get_scales", parameters_ptr=parameters_ptr, PACKAGE="Rux")))
 			else 
-				return(c(.Call("time_series_parameters_set_scales", parameters_ptr=parameters_ptr, PACKAGE="Rux")))
+				return(c(.Call("time_series_parameters_set_scales", parameters_ptr=parameters_ptr, x=x,PACKAGE="Rux")))
     },
     obs_scales = function(x=NULL) {
 			if (is.null(x)) 
 				return(c(.Call("time_series_parameters_get_obs_scales", parameters_ptr=parameters_ptr, PACKAGE="Rux")))
 			else 
-				return(c(.Call("time_series_parameters_set_obs_scales", parameters_ptr=parameters_ptr, PACKAGE="Rux")))
+				return(c(.Call("time_series_parameters_set_obs_scales", parameters_ptr=parameters_ptr, x=x, PACKAGE="Rux")))
     }
 	),
   methods = list(
@@ -84,7 +84,7 @@ time_series_handle <- setRefClass(
 			obs_scales = rep(NA, length(y_at_times)),
 			distributions = NULL,
 			RNG=NULL,
-			seed=sample(x=1:10^3, size=1)  ## If 'ya wants random, 'ya needs a REAL seed!
+			seed=sample(x=1:10^3, size=1)  ## If 'ya wants random, 'ya needs a REAL seed! (not this one!)
     ) {
       # Checks:
       competingData <- !is.na(y_at_times) & (!is.na(minima_at_times) | !is.na(maxima_at_times))
@@ -195,6 +195,12 @@ time_series_handle <- setRefClass(
     	distribution_type[[as.character(which)]] <<- type
     	return(0)
   	},
+		add_distributions = function(types=NULL) {
+			if (is.null(types)) stop("'types' must be a character vector of distribution types.")
+			if (length(types) != length(y_)) 
+				stop("'types' must contain one distribution type per time point.")
+			for (type in types) add_distribution(type)
+		},
     drop_distribution = function(which=NULL) {
    		if ((which < 1) || (which > length(locs_))) {
       	msg <- paste(
@@ -202,20 +208,21 @@ time_series_handle <- setRefClass(
           [1,",length(locs_), "].\n", sep='')
         stop(msg)
       } else {
-        .Call("drop_distribution", xp=posterior_ptr, which=which-1, PACKAGE="Rux")
+        .Call("drop_distribution", tsp_xp=posterior_ptr, which=which-1, PACKAGE="Rux")
       }
       return(0)
     },
     drop_all = function(which=NULL) {
     	for ( i in 1:length(locs_)) { drop_distribution(i) }
     },
-    lpdf = function(x) c(.Call("posterior_lpdfs", xp=posterior_ptr, X=x, PACKAGE="Rux")),
+    lpdf = function(x) c(.Call("posterior_lpdfs", tsp_xp=posterior_ptr, X=x, PACKAGE="Rux")),
     draw = function() {
-    	.Call("locations_draw", xp=locations_ptr, PACKAGE="Rux")
+    	.Call("posterior_draw", tsp_xp=locations_ptr, PACKAGE="Rux")
     }
   )
 )
 
+locations_handle$lock('times_')
 locations_handle$lock('y_')
 locations_handle$lock('mins_')
 locations_handle$lock('maxs_')
