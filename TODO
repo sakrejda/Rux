@@ -1,0 +1,6 @@
+- Use Rcpp modules to cut out the glue code.
+- Use typedefs to cut out all the unnecessary arma::Col<double>/etc...
+	pick a plain vec type and plain matrix type for most
+	storage/calculations.
+
+
