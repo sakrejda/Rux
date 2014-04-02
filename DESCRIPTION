@@ -2,7 +2,7 @@ Package: Rux
 Type: Package
 Title: This is an interface to the Luxemburg MCMC library.
 Version: 0.1.1
-Date: 2012-10-24
+Date: 2013-04-01
 Author: Krzysztof Sakrejda <krzysztof.sakrejda@gmail.com>
 Maintainer: Krzysztof Sakrejda <krzysztof.sakrejda@gmail.com>
 Description: Interface code to load data, as well as initialize and
@@ -10,4 +10,4 @@ Description: Interface code to load data, as well as initialize and
 License: GPL
 Depends: Rcpp (>= 0.11.1), RcppArmadillo
 LinkingTo: Rcpp, RcppArmadillo
-Collate: recapture-handle.R locations-handle.R bridgeMCMCglmm.R one-location-handle.R two-step.R
+Collate: recapture-handle.R time_series-handle.R bridgeMCMCglmm.R one-location-handle.R two-step.R

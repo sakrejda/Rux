@@ -92,7 +92,7 @@ RcppExport SEXP time_series_parameters_set_x_at_times(SEXP parameters_ptr, SEXP 
 }
 
 
-RcppExport SEXP time_series_parameters_set_drift(SEXP parameters_ptr, x=x) {
+RcppExport SEXP time_series_parameters_set_drift(SEXP parameters_ptr, SEXP x) {
 	BEGIN_RCPP
 		Rcpp::XPtr<Time_Series_Parameters> time_series_parameters(parameters_ptr);
 		arma::Col<double> drift = Rcpp::as<arma::Col<double> >(x);
@@ -101,7 +101,7 @@ RcppExport SEXP time_series_parameters_set_drift(SEXP parameters_ptr, x=x) {
 	END_RCPP
 }
 
-RcppExport SEXP time_series_parameters_set_tails(SEXP parameters_ptr, x=x) {
+RcppExport SEXP time_series_parameters_set_tails(SEXP parameters_ptr, SEXP x) {
 	BEGIN_RCPP
 		Rcpp::XPtr<Time_Series_Parameters> time_series_parameters(parameters_ptr);
 		arma::Col<double> tails = Rcpp::as<arma::Col<double> >(x);
@@ -110,7 +110,7 @@ RcppExport SEXP time_series_parameters_set_tails(SEXP parameters_ptr, x=x) {
 	END_RCPP
 }
 
-RcppExport SEXP time_series_parameters_set_scales(SEXP parameters_ptr, x=x) {
+RcppExport SEXP time_series_parameters_set_scales(SEXP parameters_ptr, SEXP x) {
 	BEGIN_RCPP
 		Rcpp::XPtr<Time_Series_Parameters> time_series_parameters(parameters_ptr);
 		arma::Col<double> scales = Rcpp::as<arma::Col<double> >(x);
@@ -119,7 +119,7 @@ RcppExport SEXP time_series_parameters_set_scales(SEXP parameters_ptr, x=x) {
 	END_RCPP
 }
 
-RcppExport SEXP time_series_parameters_set_obs_scales(SEXP parameters_ptr, x=x) {
+RcppExport SEXP time_series_parameters_set_obs_scales(SEXP parameters_ptr, SEXP x) {
 	BEGIN_RCPP
 		Rcpp::XPtr<Time_Series_Parameters> time_series_parameters(parameters_ptr);
 		arma::Col<double> obs_scales = Rcpp::as<arma::Col<double> >(x);

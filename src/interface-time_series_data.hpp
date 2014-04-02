@@ -1,7 +1,7 @@
 #ifndef INTERFACE_TIME_SERIES_DATA_H
 #define INTERFACE_TIME_SERIES_DATA_H
 
-#include <Rcpp.h>
+#include <RcppArmadillo.h>
 #include <time_series.hpp>
 
 RcppExport SEXP time_series_data_get_times(SEXP data_ptr);

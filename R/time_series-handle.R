@@ -27,7 +27,7 @@ time_series_handle <- setRefClass(
 				return(c(.Call("time_series_data_get_y_at_times", data_ptr=data_ptr, PACKAGE="Rux")))
 			else 
 				stop("Member 'y_at_times' can only be set at initialization.")
-    }
+    },
     minima = function(x=NULL) {
 			if (is.null(x)) 
 				return(c(.Call("time_series_data_get_minima_at_times", data_ptr=data_ptr, PACKAGE="Rux")))
@@ -146,7 +146,7 @@ time_series_handle <- setRefClass(
 			
 			# Make C++ level objects, R objects are copied
 			# and should now ONLY be accessed through handles.
-			manage_these_ptrs <<- .Call("time_series_init",
+			manage_these_ptrs <- .Call("time_series_init",
 				times_= times_,
 				y_at_times_ = y_,
 				minima_at_times_ = mins_,
@@ -181,10 +181,10 @@ time_series_handle <- setRefClass(
               "\n")
           stop(msg)
       }
-      if ((which < 1) || (which > length(locs_))) {
+      if ((which < 1) || (which > length(y_at_times))) {
           msg <- paste(
               "The 'which' parameter must be an integer in the range
-              [1,",length(locs_), "].\n", sep='')
+              [1,",length(y_at_times), "].\n", sep='')
           stop(msg)
       }
 
@@ -202,10 +202,10 @@ time_series_handle <- setRefClass(
 			for (type in types) add_distribution(type)
 		},
     drop_distribution = function(which=NULL) {
-   		if ((which < 1) || (which > length(locs_))) {
+   		if ((which < 1) || (which > length(y_at_times))) {
       	msg <- paste(
         	"The 'which' parameter must be an integer in the range
-          [1,",length(locs_), "].\n", sep='')
+          [1,",length(y_at_times), "].\n", sep='')
         stop(msg)
       } else {
         .Call("drop_distribution", tsp_xp=posterior_ptr, which=which-1, PACKAGE="Rux")
@@ -213,22 +213,22 @@ time_series_handle <- setRefClass(
       return(0)
     },
     drop_all = function(which=NULL) {
-    	for ( i in 1:length(locs_)) { drop_distribution(i) }
+    	for ( i in 1:length(y_at_times)) { drop_distribution(i) }
     },
     lpdf = function(x) c(.Call("posterior_lpdfs", tsp_xp=posterior_ptr, X=x, PACKAGE="Rux")),
     draw = function() {
-    	.Call("posterior_draw", tsp_xp=locations_ptr, PACKAGE="Rux")
+    	.Call("posterior_draw", tsp_xp=posterior_ptr, PACKAGE="Rux")
     }
   )
 )
 
-locations_handle$lock('times_')
-locations_handle$lock('y_')
-locations_handle$lock('mins_')
-locations_handle$lock('maxs_')
-#locations_handle$lock('drift_')
-#locations_handle$lock('tails_')
-#locations_handle$lock('scales_')
-#locations_handle$lock('obs_scales_')
+time_series_handle$lock('times_')
+time_series_handle$lock('y_')
+time_series_handle$lock('mins_')
+time_series_handle$lock('maxs_')
+#time_series_handle$lock('drift_')
+#time_series_handle$lock('tails_')
+#time_series_handle$lock('scales_')
+#time_series_handle$lock('obs_scales_')
 
 
