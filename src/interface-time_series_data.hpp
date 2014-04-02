@@ -15,11 +15,11 @@ RcppExport SEXP time_series_parameters_get_tails(SEXP parameters_ptr);
 RcppExport SEXP time_series_parameters_get_scales(SEXP parameters_ptr);
 RcppExport SEXP time_series_parameters_get_obs_scales(SEXP parameters_ptr);
 
-RcppExport SEXP time_series_parameters_set_x_at_times(SEXP parameters_ptr, x=x);
-RcppExport SEXP time_series_parameters_set_drift(SEXP parameters_ptr, x=x);
-RcppExport SEXP time_series_parameters_set_tails(SEXP parameters_ptr, x=x);
-RcppExport SEXP time_series_parameters_set_scales(SEXP parameters_ptr, x=x);
-RcppExport SEXP time_series_parameters_set_obs_scales(SEXP parameters_ptr, x=x);
+RcppExport SEXP time_series_parameters_set_x_at_times(SEXP parameters_ptr, SEXP x);
+RcppExport SEXP time_series_parameters_set_drift(SEXP parameters_ptr, SEXP x);
+RcppExport SEXP time_series_parameters_set_tails(SEXP parameters_ptr, SEXP x);
+RcppExport SEXP time_series_parameters_set_scales(SEXP parameters_ptr, SEXP x);
+RcppExport SEXP time_series_parameters_set_obs_scales(SEXP parameters_ptr, SEXP x);
 
 
 #endif
