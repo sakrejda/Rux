@@ -1,12 +1,13 @@
 time_series_handle <- setRefClass(
     Class = "time_series_handle",
     fields = list(
+        dimension_ = "numeric",
         times_ = "numeric",
-    y_ = "numeric",
-    mins_ = "numeric",
-    maxs_ = "numeric",
-    x_ = "numeric",
-    drift_ = "numeric",
+        y_ = "numeric",
+        mins_ = "numeric",
+        maxs_ = "numeric",
+        x_ = "numeric",
+        drift_ = "numeric",
         tails_ = "numeric",
         scales_ = "numeric",
         obs_scales_ = "numeric",
@@ -16,69 +17,69 @@ time_series_handle <- setRefClass(
         parameters_ptr = "externalptr",
         posterior_ptr = "externalptr",
         rng_ptr = "externalptr",
-    times = function(x=NULL) {
-            if (identical(data_ptr), new('externalptr')) return("No data available to retrieve.")
+        times = function(x=NULL) {
+            if (identical(data_ptr, new('externalptr'))) return("No data available to retrieve.")
             if (is.null(x))
                 return(c(.Call("time_series_data_get_times", data_ptr=data_ptr, PACKAGE="Rux")))
             else
                 stop("Member 'times' can only be set at initialization.")
-    },
-    y = function(x=NULL) {
-            if (identical(data_ptr), new('externalptr')) return("No data available to retrieve.")
+        },
+        y = function(x=NULL) {
+            if (identical(data_ptr, new('externalptr'))) return("No data available to retrieve.")
             if (is.null(x))
                 return(c(.Call("time_series_data_get_y_at_times", data_ptr=data_ptr, PACKAGE="Rux")))
             else
                 stop("Member 'y_at_times' can only be set at initialization.")
-    },
-    minima = function(x=NULL) {
-            if (identical(data_ptr), new('externalptr')) return("No data available to retrieve.")
+        },
+        minima = function(x=NULL) {
+            if (identical(data_ptr, new('externalptr'))) return("No data available to retrieve.")
             if (is.null(x))
                 return(c(.Call("time_series_data_get_minima_at_times", data_ptr=data_ptr, PACKAGE="Rux")))
             else
                 stop("Member 'minima_at_times' can only be set at initialization.")
-    },
-    maxima = function(x=NULL) {
-            if (identical(data_ptr), new('externalptr')) return("No data available to retrieve.")
+        },
+        maxima = function(x=NULL) {
+            if (identical(data_ptr, new('externalptr'))) return("No data available to retrieve.")
             if (is.null(x))
                 return(c(.Call("time_series_data_get_maxima_at_times", data_ptr=data_ptr, PACKAGE="Rux")))
             else
                 stop("Member 'maxima_at_times' can only be set at initialization.")
-    },
-    x = function(x=NULL) {
-            if (identical(data_ptr), new('externalptr')) return("No parameters available to retrieve.")
+        },
+        x = function(x=NULL) {
+            if (identical(parameters_ptr, new('externalptr'))) return("No parameters available to retrieve.")
             if (is.null(x))
                 return(c(.Call("time_series_parameters_get_x_at_times", parameters_ptr=parameters_ptr, PACKAGE="Rux")))
             else
                 return(c(.Call("time_series_parameters_set_x_at_times", parameters_ptr=parameters_ptr, x=x, PACKAGE="Rux")))
-    },
-    drift = function(x=NULL) {
-            if (identical(data_ptr), new('externalptr')) return("No parameters available to retrieve.")
+        },
+        drift = function(x=NULL) {
+            if (identical(parameters_ptr, new('externalptr'))) return("No parameters available to retrieve.")
             if (is.null(x))
                 return(c(.Call("time_series_parameters_get_drift", parameters_ptr=parameters_ptr, PACKAGE="Rux")))
             else
                 return(c(.Call("time_series_parameters_set_drift", parameters_ptr=parameters_ptr, x=x, PACKAGE="Rux")))
-    },
-    tails = function(x=NULL) {
-            if (identical(data_ptr), new('externalptr')) return("No parameters available to retrieve.")
+        },
+        tails = function(x=NULL) {
+            if (identical(parameters_ptr, new('externalptr'))) return("No parameters available to retrieve.")
             if (is.null(x))
                 return(c(.Call("time_series_parameters_get_tails", parameters_ptr=parameters_ptr, PACKAGE="Rux")))
             else
                 return(c(.Call("time_series_parameters_set_tails", parameters_ptr=parameters_ptr, x=x, PACKAGE="Rux")))
-    },
-    scales = function(x=NULL) {
-            if (identical(data_ptr), new('externalptr')) return("No parameters available to retrieve.")
+        },
+        scales = function(x=NULL) {
+            if (identical(parameters_ptr, new('externalptr'))) return("No parameters available to retrieve.")
             if (is.null(x))
                 return(c(.Call("time_series_parameters_get_scales", parameters_ptr=parameters_ptr, PACKAGE="Rux")))
             else
                 return(c(.Call("time_series_parameters_set_scales", parameters_ptr=parameters_ptr, x=x,PACKAGE="Rux")))
-    },
-    obs_scales = function(x=NULL) {
-            if (identical(data_ptr), new('externalptr')) return("No parameters available to retrieve.")
+        },
+        obs_scales = function(x=NULL) {
+            if (identical(parameters_ptr, new('externalptr'))) return("No parameters available to retrieve.")
             if (is.null(x))
                 return(c(.Call("time_series_parameters_get_obs_scales", parameters_ptr=parameters_ptr, PACKAGE="Rux")))
             else
                 return(c(.Call("time_series_parameters_set_obs_scales", parameters_ptr=parameters_ptr, x=x, PACKAGE="Rux")))
-    }
+        }
     ),
   methods = list(
         initialize = function(
@@ -107,18 +108,16 @@ time_series_handle <- setRefClass(
        }
 
             # Sometimes it's just easier this way:
-            n_times <- length(times)
+            dimension_ <<- length(times)
+            n_times <- dimension_
             if (length(y_at_times) != n_times) stop("Must have one measurement per time point.")
-            if (length(minima) != n_times)     stop("Must have one lower bound per time point.")
-            if (length(maxima) != n_times)     stop("Must have one upper bound per time point.")
+            if (length(minima_at_times) != n_times)     stop("Must have one lower bound per time point.")
+            if (length(maxima_at_times) != n_times)     stop("Must have one upper bound per time point.")
             if (length(x_at_times) != n_times) stop("Must have one initial value for state ('x') per time point.")
             if (length(drift) != n_times)      stop("Must have one drift value per time point.")
             if (length(tails) != n_times)      stop("Must have one tail value per time point.")
             if (length(scales) != n_times)     stop("Must have one scale value per time point.")
             if (length(obs_scales) != n_times) stop("Must have one observation scale value per time point.")
-
-
-
 
             # Distributions:
             if (is.null(distributions)) {
@@ -179,7 +178,7 @@ time_series_handle <- setRefClass(
         if(is.null(types)) types <- distribution_type
       if(!all(types) %in% distr_)
         stop("Some distributions not of an allowed type.")
-      if(length(type) != length(times_))
+      if(length(types) != dimension_)
         stop("A distribution type must be assigned to each time point.")
        return(TRUE)
         },
@@ -190,42 +189,44 @@ time_series_handle <- setRefClass(
               "\n")
           stop(msg)
       }
-      if ((which < 1) || (which > length(y_at_times))) {
+      if ((which < 1) || (which > dimension_)) {
           msg <- paste(
               "The 'which' parameter must be an integer in the range
-              [1,",length(y_at_times), "].\n", sep='')
+              [1,",dimension_, "].\n", sep='')
           stop(msg)
       }
 
-            target_function <- paste('bind', type, 'distribution', sep='_')
-
-            #
-            .Call(target_function, tsp_xp=posterior_ptr, which=which-1)
-        distribution_type[[as.character(which)]] <<- type
-        return(0)
+      # Get name of outside function, call it and mark the type as set.
+      target_function <- paste('bind', type, 'distribution', sep='_')
+      .Call(target_function, tsp_xp=posterior_ptr, which=which-1)
+      distribution_type[[as.character(which)]] <<- type
+      return(0)
     },
-        add_distributions = function(types=NULL) {
-            if (is.null(types)) stop("'types' must be a character vector of distribution types.")
-            if (length(types) != length(y_))
-                stop("'types' must contain one distribution type per time point.")
-            for (type in types) add_distribution(type)
-        },
+    add_distributions = function(types=NULL) {
+        if (is.null(types)) stop("'types' must be a character vector of distribution types.")
+        if (length(types) != dimension_)
+            stop("'types' must contain one distribution type per time point.")
+        for (i in 1:dimension_) add_distribution(type=types[i],which=i)
+    },
     drop_distribution = function(which=NULL) {
-        if ((which < 1) || (which > length(y_at_times))) {
+        if ((which < 1) || (which > dimension_)) {
         msg <- paste(
             "The 'which' parameter must be an integer in the range
-          [1,",length(y_at_times), "].\n", sep='')
+          [1,",dimension_, "].\n", sep='')
         stop(msg)
       } else {
         .Call("drop_distribution", tsp_xp=posterior_ptr, which=which-1, PACKAGE="Rux")
+        distribution_type[[as.character(which)]] <<- NULL
       }
       return(0)
     },
     drop_all = function(which=NULL) {
-        for ( i in 1:length(y_at_times)) { drop_distribution(i) }
+        for ( i in 1:dimension_) { drop_distribution(i) }
     },
     lpdf = function(x) c(.Call("posterior_lpdfs", tsp_xp=posterior_ptr, X=x, PACKAGE="Rux")),
     draw = function() {
+        if (length(distribution_type) != dimension_)
+            warning("Distributions not set on some dimensions.")
         .Call("posterior_draw", tsp_xp=posterior_ptr, PACKAGE="Rux")
     }
   )
